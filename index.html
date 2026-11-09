@@ -2,1205 +2,541 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="MF Fitness">
 <title>Mehanovic Fitness</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <style>
-  /* ── MONTENEGRIN PALETTE ──
-     Gold:   #c8960a (primary), #d4a80e (bright), #e6c040 (highlight), #8a6208 (dark), #f5e9c0 (tint)
-     Crimson:#8a1010 (primary), #a81818 (mid),    #c02020 (bright),    #5a0808 (deep)
-     BG:     #0e0a04 (near black), #1a1208 (dark surface), #241a0a (card), #2e2410 (border)
-     Text:   #f5e9c0 (primary), #c8960a (accent), #8a7040 (muted)
-  */
+  /* Layout: one quiet 640px column. Glass segmented nav on top, a large-title day
+     header with an activity ring, inset grouped lists per circuit, a floating
+     glass rest timer at the bottom. Montenegrin crimson and gold are the only color. */
   :root {
-    --bg:          #0e0a04;
-    --surface:     #1a1208;
-    --card:        #221808;
-    --border:      #3a2e14;
-    --faint:       #2a1e0a;
-    --text:        #f5e9c0;
-    --muted:       #9a8450;
-    --gold:        #c8960a;
-    --gold-bright: #e6c040;
-    --gold-tint:   #f5e9c0;
-    --crimson:     #8a1010;
-    --crimson-mid: #a81818;
-    --crimson-bright: #c02020;
-    --header-bg:   #0a0704;
-    --tab-bg:      #0a0704;
-    --tab-inactive: rgba(200,150,10,0.35);
-    --push: #a81818; --pull: #c8960a; --legs: #8a6208; --full: #8a1010; --abs: #c8960a;
+    --bg: #f5f5f7;
+    --card: #ffffff;
+    --fg: #1d1d1f;
+    --muted: #6e6e73;
+    --line: rgba(0, 0, 0, 0.09);
+    --fill: rgba(118, 118, 128, 0.13);
+    --glass: rgba(245, 245, 247, 0.74);
+    --panel: rgba(255, 255, 255, 0.82);
+    --red: #b5121b;
+    --gold: #9a7400;
+    --on-red: #ffffff;
+    --shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.05);
+    --float: 0 10px 40px rgba(0,0,0,.18);
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Helvetica Neue", Arial, sans-serif;
+    --display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Helvetica Neue", Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #000000; --card: #1c1c1e; --fg: #f5f5f7; --muted: #98989f;
+      --line: rgba(255,255,255,0.11); --fill: rgba(118,118,128,0.26);
+      --glass: rgba(10,10,12,0.72); --panel: rgba(36,36,40,0.82);
+      --red: #e0333c; --gold: #e2bd4a; --on-red: #ffffff;
+      --shadow: none; --float: 0 10px 40px rgba(0,0,0,.6);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #000000; --card: #1c1c1e; --fg: #f5f5f7; --muted: #98989f;
+    --line: rgba(255,255,255,0.11); --fill: rgba(118,118,128,0.26);
+    --glass: rgba(10,10,12,0.72); --panel: rgba(36,36,40,0.82);
+    --red: #e0333c; --gold: #e2bd4a; --on-red: #ffffff;
+    --shadow: none; --float: 0 10px 40px rgba(0,0,0,.6);
+    color-scheme: dark;
   }
 
-  /* ── LIGHT MODE overrides ── */
-  body.light {
-    --bg:          #f5edd8;
-    --surface:     #ede0c4;
-    --card:        #faf3e6;
-    --border:      #c8a45a;
-    --faint:       #ede0c4;
-    --text:        #2a1e08;
-    --muted:       #7a5e28;
-    --gold:        #7a5208;
-    --gold-bright: #c8960a;
-    --gold-tint:   #2a1e08;
-    --crimson:     #8a1010;
-    --crimson-mid: #a81818;
-    --header-bg:   #e8d8b0;
-    --tab-bg:      #ddc990;
-    --tab-inactive: rgba(90,60,10,0.4);
-    --push: #a81818; --pull: #7a5208; --legs: #5a4010; --full: #8a1010; --abs: #7a5208;
-  }
-  body.light .brand-header     { background: var(--header-bg); }
-  body.light .tab-bar          { background: var(--tab-bg); border-bottom-color: var(--border); }
-  body.light .tab              { color: var(--tab-inactive); }
-  body.light .tab.active       { color: var(--gold); border-color: var(--gold); }
-  body.light .timer-bar        { background: var(--header-bg); border-top-color: var(--gold); }
-  body.light .timer-display    { color: var(--gold); }
-  body.light .timer-start-btn  { background: var(--faint); color: var(--gold); border-color: var(--border); }
-  body.light .timer-ring-fill  { stroke: var(--gold); }
-  body.light .rest-fab         { background: var(--header-bg); color: var(--gold); border-color: var(--gold); }
-  body.light .rest-fab-dot     { background: var(--gold); }
-  body.light .reset-btn        { color: var(--muted); border-color: var(--border); }
-  body.light .callout          { background: #e8d8b0; border-left-color: var(--gold); }
-  body.light .complete-banner  { background: rgba(120,80,8,0.08); border-color: rgba(120,80,8,0.3); }
-  body.light .complete-banner-text { color: var(--gold); }
-  body.light .brand-mehanovic  { color: var(--gold); }
-  body.light .brand-fitness    { color: var(--crimson-mid); }
-  body.light .brand-tagline    { color: var(--muted); }
-  body.light .brand-sub        { color: #9a7020; }
-  body.light .brand-rule       { opacity: 0.4; }
-  body.light .mode-toggle      { border-color: rgba(100,70,10,0.4); }
-
-  /* ── MODE TOGGLE ── */
-  .mode-toggle {
-    position: absolute;
-    top: 14px; right: 14px;
-    background: none;
-    border: 1px solid rgba(200,150,10,0.35);
-    border-radius: 20px;
-    padding: 5px 11px;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 11px; font-weight: 700;
-    letter-spacing: 2px; text-transform: uppercase;
-    color: var(--muted);
-    cursor: pointer;
-    transition: color 0.2s, border-color 0.2s;
-    z-index: 10;
-    display: flex; align-items: center; gap: 5px;
-  }
-  .mode-toggle:hover { color: var(--gold); border-color: var(--gold); }
-  .mode-toggle:active { opacity: 0.7; }
-  .mode-icon { font-size: 13px; }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
+  :root { padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px); }
+  [hidden] { display: none !important; }
+  *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { -webkit-text-size-adjust: 100%; }
   body {
+    margin: 0;
     background: var(--bg);
-    color: var(--text);
-    font-family: 'Lora', serif;
-    min-height: 100vh;
-    padding-bottom: 110px;
+    color: var(--fg);
+    font-family: var(--font);
+    font-size: 16px;
+    line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 120px;
+    transition: background-color .3s ease, color .3s ease;
+  }
+  body::before {
+    content: ""; position: fixed; inset: 0 0 auto;
+    height: env(safe-area-inset-top, 0px); z-index: 60; background: var(--bg);
+  }
+  button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+  :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+  .wrap {
+    max-width: 640px; margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
   }
 
-  /* ════════════════════════════
-     BRAND HEADER — full logo
-  ════════════════════════════ */
-  .brand-header {
-    background: #0a0704;
-    border-bottom: 2px solid var(--gold);
-    padding: 20px 16px 16px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0;
+  /* ── Brand ── */
+  .brand { padding-block: 22px 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .brand-id { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .brand-mark { width: 44px; height: 18px; flex: none; }
+  .bb-bar { fill: var(--gold); }
+  .bb-plate { fill: var(--red); }
+  .brand-name { font-family: var(--display); font-size: 17px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; }
+  .brand-name span { color: var(--red); }
+  .brand-tag { font-size: 12px; color: var(--muted); letter-spacing: 0.01em; }
+  .icon-btn {
+    width: 36px; height: 36px; border-radius: 50%; flex: none;
+    background: var(--fill); display: grid; place-items: center;
+    transition: transform .15s ease, background-color .2s ease;
+  }
+  .icon-btn:active { transform: scale(.92); }
+  .icon-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ── Segmented nav ── */
+  .nav {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50;
+    background: var(--glass);
+    -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav .wrap { padding-block: 8px; }
+  .seg { display: flex; gap: 2px; padding: 2px; border-radius: 10px; background: var(--fill); overflow-x: auto; scrollbar-width: none; }
+  .seg::-webkit-scrollbar { display: none; }
+  .seg button {
+    flex: 1 0 auto; padding: 7px 10px; border-radius: 8px;
+    font-size: 13px; font-weight: 600; letter-spacing: -0.01em; color: var(--muted); white-space: nowrap;
+    display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+    transition: background-color .2s ease, color .2s ease, box-shadow .2s ease;
+  }
+  .seg button[aria-selected="true"] { background: var(--card); color: var(--fg); box-shadow: 0 1px 3px rgba(0,0,0,.14); }
+  .pip { width: 5px; height: 5px; border-radius: 50%; background: var(--red); opacity: 0; transition: opacity .25s, background-color .25s; }
+  .pip.on { opacity: 1; }
+  .pip.full { background: var(--gold); }
+
+  /* ── Day page ── */
+  .page { animation: rise .35s cubic-bezier(.2,.7,.2,1); }
+  @keyframes rise { from { opacity: .0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .day-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 28px 6px; }
+  .eyebrow { font-size: 13px; font-weight: 600; color: var(--red); letter-spacing: 0.02em; }
+  .day-title { font-family: var(--display); font-size: clamp(40px, 12vw, 56px); font-weight: 800; letter-spacing: -0.035em; line-height: 1.02; margin: 2px 0 6px; text-wrap: balance; }
+  .day-sub { font-size: 15px; color: var(--muted); }
+
+  .ring { position: relative; width: 76px; height: 76px; flex: none; }
+  .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .ring circle { fill: none; stroke-width: 7; }
+  .ring .track { stroke: var(--fill); }
+  .ring .arc { stroke: var(--red); stroke-linecap: round; transition: stroke-dashoffset .5s cubic-bezier(.2,.7,.2,1), stroke .3s; }
+  .ring.complete .arc { stroke: var(--gold); }
+  .ring-num { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; font-variant-numeric: tabular-nums; }
+  .ring-num b { display: block; font-size: 17px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; }
+  .ring-num small { display: block; font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+  .note {
+    margin-top: 18px; padding: 12px 16px; border-radius: 14px;
+    background: var(--fill); color: var(--muted); font-size: 14px; line-height: 1.45;
   }
 
-  .brand-barbell {
-    width: 100%;
-    max-width: 420px;
-    height: 60px;
-  }
+  .group { margin-top: 26px; }
+  .group-head { display: flex; align-items: baseline; gap: 8px; padding: 0 16px 8px; }
+  .group-head h3 { margin: 0; font-size: 13px; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; color: var(--muted); }
+  .group-head span { font-size: 13px; color: var(--muted); }
+  .card { background: var(--card); border-radius: 18px; box-shadow: var(--shadow); overflow: hidden; }
+  .row { display: flex; align-items: center; gap: 12px; padding: 12px 14px 12px 16px; position: relative; }
+  .row + .row::before { content: ""; position: absolute; top: 0; right: 0; left: 16px; height: 1px; background: var(--line); }
+  .row.has-badge + .row.has-badge::before { left: 52px; }
 
-  .brand-wordmark {
-    display: flex;
-    align-items: baseline;
-    gap: 0;
-    margin-top: 2px;
+  .badge {
+    width: 24px; height: 24px; border-radius: 50%; flex: none;
+    display: grid; place-items: center; font-size: 11px; font-weight: 700;
+    background: var(--red); color: var(--on-red);
   }
+  .badge.hollow { background: transparent; color: var(--gold); box-shadow: inset 0 0 0 1.5px var(--gold); }
+  .ex { flex: 1; min-width: 0; }
+  .ex-name { font-size: 16px; font-weight: 500; letter-spacing: -0.01em; }
+  .ex-reps { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .ex-note { font-size: 12px; color: var(--muted); opacity: .85; }
+  .row.done .ex-name { color: var(--muted); }
 
-  .brand-mehanovic {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 32px;
-    font-weight: 900;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    color: var(--gold);
-    line-height: 1;
+  .sets { display: flex; gap: 6px; flex: none; flex-wrap: wrap; justify-content: flex-end; max-width: 60%; }
+  .set {
+    min-width: 34px; height: 34px; border-radius: 17px; padding: 0 4px;
+    display: grid; place-items: center; position: relative;
+    background: var(--fill); color: var(--muted);
+    font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums;
+    transition: background-color .2s ease, transform .15s ease, color .2s ease;
   }
+  .set.wide { padding: 0 12px; font-size: 12px; }
+  .set:active { transform: scale(.88); }
+  .set svg { position: absolute; width: 15px; height: 15px; stroke: var(--on-red); fill: none; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; transform: scale(.5); transition: opacity .18s, transform .25s cubic-bezier(.34,1.56,.64,1); }
+  .set[aria-pressed="true"] { background: var(--red); color: transparent; }
+  .set[aria-pressed="true"] svg { opacity: 1; transform: none; }
 
-  .brand-fitness {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 32px;
-    font-weight: 900;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    color: var(--crimson-mid);
-    line-height: 1;
+  .banner {
+    margin-top: 26px; padding: 22px 16px; border-radius: 18px; text-align: center;
+    background: var(--card); box-shadow: var(--shadow);
+    animation: pop .45s cubic-bezier(.34,1.56,.64,1) both;
   }
+  @keyframes pop { from { opacity: 0; transform: scale(.92); } to { opacity: 1; transform: none; } }
+  .banner-check { width: 44px; height: 44px; border-radius: 50%; margin: 0 auto 10px; background: var(--gold); display: grid; place-items: center; }
+  .banner-check svg { width: 22px; height: 22px; stroke: var(--card); fill: none; stroke-width: 2.8; stroke-linecap: round; stroke-linejoin: round; }
+  .banner b { display: block; font-family: var(--display); font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
+  .banner span { font-size: 14px; color: var(--muted); }
 
-  .brand-tm {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 11px;
-    color: var(--muted);
-    vertical-align: super;
-    margin-left: 2px;
-  }
+  .reset { display: block; margin: 22px auto 0; padding: 8px 16px; border-radius: 999px; font-size: 15px; font-weight: 500; color: var(--red); transition: background-color .2s; }
+  .reset:hover { background: var(--fill); }
+  .legend { margin-top: 18px; display: flex; justify-content: center; gap: 18px; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
+  .legend i { display: inline-flex; align-items: center; gap: 6px; font-style: normal; }
+  .legend .badge { width: 14px; height: 14px; }
 
-  .brand-rule {
-    width: 260px;
-    height: 1px;
-    background: linear-gradient(to right, transparent, var(--gold), transparent);
-    margin: 6px auto 4px;
-    opacity: 0.6;
-  }
+  /* ── Emblem ── */
+  .emblem { width: 200px; max-width: 100%; margin: 56px auto 0; display: block; }
+  .emblem .e-gold { stroke: var(--gold); fill: none; }
+  .emblem .e-line { stroke: var(--line); fill: none; }
+  .emblem text { font-family: var(--display); }
+  .emblem .t-top { fill: var(--fg); font-size: 11px; font-weight: 700; letter-spacing: 3px; }
+  .emblem .t-bot { fill: var(--muted); font-size: 7.5px; font-weight: 600; letter-spacing: 2.2px; }
+  .emblem .t-mid { fill: var(--muted); font-size: 7.5px; font-weight: 600; letter-spacing: 3px; }
+  .emblem .e-dot { fill: var(--gold); }
 
-  .brand-tagline {
-    font-family: 'Lora', serif;
-    font-style: italic;
-    font-size: 12px;
-    letter-spacing: 1.5px;
-    color: var(--muted);
-    text-align: center;
+  /* ── Rest timer ── */
+  .dock {
+    position: fixed; z-index: 70; left: 0; right: 0;
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    display: flex; justify-content: center; pointer-events: none;
   }
+  .dock > * { pointer-events: auto; }
+  .glass {
+    background: var(--panel); border: 1px solid var(--line); box-shadow: var(--float);
+    -webkit-backdrop-filter: saturate(180%) blur(24px); backdrop-filter: saturate(180%) blur(24px);
+  }
+  .rest-pill { display: inline-flex; align-items: center; gap: 9px; padding: 12px 20px; border-radius: 999px; font-size: 15px; font-weight: 600; letter-spacing: -0.01em; transition: transform .15s; }
+  .rest-pill:active { transform: scale(.95); }
+  .rest-pill svg { width: 17px; height: 17px; stroke: var(--red); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .rest-pill small { font-size: 13px; font-weight: 500; color: var(--muted); font-variant-numeric: tabular-nums; }
 
-  .brand-sub {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 5px;
-    text-transform: uppercase;
-    color: #5a4020;
-    margin-top: 4px;
-  }
+  .rest-panel { width: 100%; max-width: 420px; border-radius: 28px; padding: 10px 12px 10px 14px; display: flex; align-items: center; gap: 12px; animation: up .35s cubic-bezier(.2,.8,.2,1); }
+  @keyframes up { from { opacity: 0; transform: translateY(20px) scale(.96); } to { opacity: 1; transform: none; } }
+  .t-ring { width: 48px; height: 48px; flex: none; transform: rotate(-90deg); }
+  .t-ring circle { fill: none; stroke-width: 5; }
+  .t-ring .track { stroke: var(--fill); }
+  .t-ring .arc { stroke: var(--gold); stroke-linecap: round; transition: stroke-dashoffset .3s linear, stroke .3s; }
+  .urgent .t-ring .arc { stroke: var(--red); }
+  .t-mid { flex: 1; min-width: 0; }
+  .t-label { font-size: 12px; font-weight: 500; color: var(--muted); }
+  .t-time { font-family: var(--display); font-size: 32px; font-weight: 700; letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums; transition: color .3s; }
+  .urgent .t-time { color: var(--red); }
+  .t-btns { display: flex; gap: 6px; flex: none; }
+  .t-btns .icon-btn { width: 40px; height: 40px; }
+  .t-btns .icon-btn.primary { background: var(--red); color: var(--on-red); }
+  .t-btns .icon-btn.primary svg { fill: currentColor; stroke: none; }
 
-  /* ════════════════════════════
-     TAB BAR
-  ════════════════════════════ */
-  .tab-bar {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: #0a0704;
-    display: flex;
-    overflow-x: auto;
-    scrollbar-width: none;
-    border-bottom: 2px solid var(--border);
-  }
-  .tab-bar::-webkit-scrollbar { display: none; }
-
-  .tab {
-    flex-shrink: 0;
-    padding: 13px 18px;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 12px; font-weight: 700;
-    letter-spacing: 2.5px; text-transform: uppercase;
-    color: rgba(200,150,10,0.35);
-    cursor: pointer;
-    border-bottom: 3px solid transparent;
-    transition: color 0.2s, border-color 0.2s;
-    user-select: none;
-    margin-bottom: -2px;
-  }
-  .tab.active       { color: var(--gold); border-color: var(--gold); }
-
-  .tab-pip {
-    display: inline-block;
-    width: 5px; height: 5px;
-    border-radius: 50%;
-    margin-left: 5px;
-    vertical-align: middle;
-    background: var(--crimson-mid);
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-  .tab-pip.visible { opacity: 1; }
-
-  /* ════════════════════════════
-     PAGES
-  ════════════════════════════ */
-  .page { display: none; padding: 0 16px 20px; animation: fadeIn 0.25s ease; }
-  .page.active { display: block; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-
-  /* ════════════════════════════
-     DAY HEADER
-  ════════════════════════════ */
-  .day-header {
-    padding: 24px 4px 14px;
-    border-bottom: 2px solid var(--gold);
-    margin-bottom: 6px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-  }
-
-  .day-label-text {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 11px; font-weight: 600;
-    letter-spacing: 3px; text-transform: uppercase;
-    color: var(--crimson-mid);
-    margin-bottom: 3px;
-  }
-
-  .day-title {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 52px; font-weight: 900;
-    text-transform: uppercase; line-height: 1;
-    color: var(--gold);
-  }
-
-  .day-subtitle {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 12px; letter-spacing: 1.5px;
-    color: var(--muted); text-transform: uppercase; font-weight: 500;
-  }
-
-  .progress-wrap { text-align: right; }
-  .progress-label {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 10px; letter-spacing: 2px;
-    text-transform: uppercase; color: var(--muted); margin-bottom: 5px;
-  }
-  .progress-bar-bg {
-    width: 80px; height: 4px;
-    background: var(--border); border-radius: 10px;
-    overflow: hidden; margin-left: auto;
-  }
-  .progress-bar-fill {
-    height: 100%; border-radius: 10px;
-    width: 0%; transition: width 0.4s ease;
-    background: var(--gold);
-  }
-
-  .reset-btn {
-    display: block; margin: 18px auto 0;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 11px; font-weight: 600;
-    letter-spacing: 2px; text-transform: uppercase;
-    color: var(--muted); background: none;
-    border: 1px solid var(--border); border-radius: 20px;
-    padding: 6px 18px; cursor: pointer;
-    transition: color 0.2s, border-color 0.2s;
-  }
-  .reset-btn:hover { color: var(--gold); border-color: var(--gold); }
-  .reset-btn:active { opacity: 0.6; }
-
-  /* ════════════════════════════
-     CIRCUIT GROUPS
-  ════════════════════════════ */
-  .group { margin-top: 20px; }
-  .group-label {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 10px; letter-spacing: 3px;
-    text-transform: uppercase; font-weight: 600;
-    color: var(--muted); padding-bottom: 6px;
-    border-bottom: 1px solid var(--border); margin-bottom: 2px;
-  }
-
-  /* ════════════════════════════
-     EXERCISE ROWS
-  ════════════════════════════ */
-  .ex-row {
-    display: flex; align-items: center;
-    padding: 9px 0;
-    border-bottom: 1px solid var(--faint);
-    gap: 8px;
-  }
-  .ex-row:last-child { border-bottom: none; }
-
-  .ex-left { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
-
-  /* Circuit badge — filled = compound, hollow = isolation */
-  .circuit-badge {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 11px; font-weight: 800;
-    width: 22px; height: 22px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    background: var(--crimson);
-    color: var(--gold-bright);
-  }
-  .circuit-badge.hollow {
-    background: transparent;
-    border: 2px solid var(--gold);
-    color: var(--gold);
-    font-size: 10px;
-  }
-
-  .ex-name-wrap { flex: 1; min-width: 0; }
-  .ex-name { font-family: 'Lora', serif; font-size: 13.5px; color: var(--gold-tint); line-height: 1.3; }
-  .ex-reps {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 11px; font-weight: 600;
-    letter-spacing: 1px; text-transform: uppercase;
-    color: var(--muted); margin-top: 1px; display: block;
-  }
-  .ex-note {
-    font-family: 'Lora', serif; font-style: italic;
-    font-size: 10.5px; color: var(--muted); display: block; margin-top: 1px;
-  }
-
-  /* ════════════════════════════
-     SET BUTTONS
-  ════════════════════════════ */
-  .set-btns { display: flex; gap: 5px; flex-shrink: 0; }
-
-  .set-btn {
-    width: 28px; height: 28px; border-radius: 50%;
-    border: 2px solid var(--border);
-    background: var(--faint);
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.15s ease;
-    position: relative; flex-shrink: 0;
-  }
-  .set-btn:active { transform: scale(0.88); }
-
-  .set-btn::before {
-    content: attr(data-n);
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 11px; font-weight: 700;
-    color: var(--muted); transition: opacity 0.15s;
-  }
-  .set-btn::after {
-    content: '✓'; position: absolute;
-    font-size: 13px; font-weight: 900;
-    opacity: 0; transition: opacity 0.15s;
-  }
-  .set-btn.complete { border-color: transparent; background: var(--crimson-mid); }
-  .set-btn.complete::before { opacity: 0; }
-  .set-btn.complete::after  { opacity: 1; color: var(--gold-bright); }
-
-  .set-btn.wide {
-    width: auto; padding: 0 10px; border-radius: 20px;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 10px; font-weight: 700; letter-spacing: 1px;
-    color: var(--muted);
-  }
-  .set-btn.wide::before { content: attr(data-label); font-size: 10px; }
-  .set-btn.wide::after  { content: '✓'; }
-  .set-btn.wide.complete { color: var(--gold-bright); }
-
-  /* ════════════════════════════
-     CALLOUT
-  ════════════════════════════ */
-  .callout {
-    font-family: 'Lora', serif; font-style: italic;
-    font-size: 12.5px; color: var(--muted);
-    margin: 14px 0 2px; padding: 10px 14px;
-    border-radius: 0 3px 3px 0; line-height: 1.5;
-    background: #1a1208;
-    border-left: 3px solid var(--gold);
-  }
-
-  /* ════════════════════════════
-     COMPLETION BANNER
-  ════════════════════════════ */
-  .complete-banner {
-    display: none; margin-top: 24px; padding: 20px;
-    border-radius: 10px; text-align: center;
-    background: rgba(200,150,10,0.08);
-    border: 1px solid rgba(200,150,10,0.3);
-    animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
-  }
-  .complete-banner.show { display: block; }
-  .complete-banner-emoji { font-size: 32px; display: block; margin-bottom: 8px; }
-  .complete-banner-text {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 20px; font-weight: 800;
-    letter-spacing: 3px; text-transform: uppercase;
-    color: var(--gold);
-  }
-
-  @keyframes popIn {
-    from { opacity: 0; transform: scale(0.85); }
-    to   { opacity: 1; transform: scale(1); }
-  }
-
-  /* ════════════════════════════
-     REST TIMER
-  ════════════════════════════ */
-  .timer-bar {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    z-index: 200;
-    background: #0a0704;
-    border-top: 2px solid var(--gold);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 20px 16px;
-    gap: 16px;
-    transform: translateY(100%);
-    transition: transform 0.3s cubic-bezier(0.34,1.2,0.64,1);
-  }
-  .timer-bar.visible { transform: translateY(0); }
-
-  .timer-btn {
-    width: 52px; height: 52px; border-radius: 50%;
-    border: none; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; font-size: 20px;
-    transition: transform 0.15s, opacity 0.15s;
-  }
-  .timer-btn:active { transform: scale(0.9); opacity: 0.8; }
-
-  .timer-start-btn { background: var(--faint); color: var(--gold); border: 1px solid var(--border); }
-  .timer-start-btn.running { background: #1a1208; }
-
-  .timer-center { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-
-  .timer-label {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 10px; font-weight: 600;
-    letter-spacing: 3px; text-transform: uppercase;
-    color: var(--muted);
-  }
-
-  .timer-display {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 42px; font-weight: 800;
-    line-height: 1; color: var(--gold);
-    letter-spacing: 2px; transition: color 0.3s;
-  }
-  .timer-display.urgent { color: var(--crimson-mid); }
-
-  .timer-ring-wrap { position: relative; width: 52px; height: 52px; flex-shrink: 0; }
-  .timer-ring { width: 52px; height: 52px; transform: rotate(-90deg); }
-  .timer-ring-bg   { fill: none; stroke: var(--border); stroke-width: 4; }
-  .timer-ring-fill {
-    fill: none; stroke: var(--gold); stroke-width: 4;
-    stroke-linecap: round;
-    stroke-dasharray: 138.2;
-    stroke-dashoffset: 0;
-    transition: stroke-dashoffset 1s linear, stroke 0.3s;
-  }
-  .timer-ring-fill.urgent { stroke: var(--crimson-mid); }
-
-  /* REST FAB */
-  .rest-fab {
-    position: fixed; bottom: 24px; right: 20px;
-    z-index: 199;
-    background: #0a0704;
-    color: var(--gold);
-    border: 1px solid var(--gold);
-    border-radius: 24px;
-    padding: 10px 18px;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 12px; font-weight: 700;
-    letter-spacing: 2px; text-transform: uppercase;
-    cursor: pointer;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.6);
-    transition: opacity 0.3s, transform 0.3s;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .rest-fab:active { transform: scale(0.95); }
-  .rest-fab.hidden { opacity: 0; pointer-events: none; transform: scale(0.9); }
-  .rest-fab-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
-  .rest-fab-dot.urgent { background: var(--crimson-mid); }
-
-  /* ════════════════════════════
-     BADGE SECTION (bottom of page)
-  ════════════════════════════ */
-  .badge-section {
-    max-width: 340px;
-    margin: 40px auto 20px;
-    padding: 0 16px;
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
   }
 </style>
+
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="barbell" viewBox="0 0 64 26">
+    <rect class="bb-bar" x="2" y="11.5" width="60" height="3" rx="1.5"/>
+    <rect class="bb-plate" x="7" y="6" width="4.5" height="14" rx="2"/>
+    <rect class="bb-plate" x="13" y="1" width="5.5" height="24" rx="2.5"/>
+    <rect class="bb-plate" x="45.5" y="1" width="5.5" height="24" rx="2.5"/>
+    <rect class="bb-plate" x="52.5" y="6" width="4.5" height="14" rx="2"/>
+  </symbol>
+</svg>
 
-<!-- ── REST TIMER FAB ── -->
-<button class="rest-fab" id="restFab" onclick="fabClicked()">
-  <span class="rest-fab-dot" id="fabDot"></span>
-  <span id="fabLabel">Rest</span>
-</button>
-
-<!-- ── REST TIMER BAR ── -->
-<div class="timer-bar" id="timerBar">
-  <div class="timer-ring-wrap">
-    <svg class="timer-ring" viewBox="0 0 52 52">
-      <circle class="timer-ring-bg" cx="26" cy="26" r="22"/>
-      <circle class="timer-ring-fill" id="timerRing" cx="26" cy="26" r="22"/>
-    </svg>
-  </div>
-  <div class="timer-center">
-    <div class="timer-label" id="timerLabel">Rest Timer</div>
-    <div class="timer-display" id="timerDisplay">1:00</div>
-  </div>
-  <button class="timer-btn timer-start-btn" id="timerStartBtn" onclick="timerToggle()">▶</button>
-</div>
-
-<!-- ════════════════════════════
-     BRAND HEADER
-════════════════════════════ -->
-<div class="brand-header" style="position:relative;">
-  <button class="mode-toggle" id="modeToggle" onclick="toggleMode()">
-    <span class="mode-icon" id="modeIcon">☀️</span>
-    <span id="modeLabel">Light</span>
-  </button>
-
-  <!-- Mini barbell SVG — slimmer plates -->
-  <svg class="brand-barbell" viewBox="0 0 420 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <!-- Bar -->
-    <rect x="60" y="25" width="300" height="10" rx="3" fill="#b8820a"/>
-    <rect x="60" y="25" width="300" height="3"  rx="2" fill="#e6c040"/>
-    <rect x="60" y="32" width="300" height="2"  rx="1" fill="#7a4e04"/>
-    <!-- Knurling centre -->
-    <rect x="180" y="25" width="2" height="10" fill="#7a4e04"/>
-    <rect x="186" y="25" width="2" height="10" fill="#7a4e04"/>
-    <rect x="192" y="25" width="2" height="10" fill="#7a4e04"/>
-    <rect x="198" y="25" width="2" height="10" fill="#7a4e04"/>
-    <rect x="204" y="25" width="2" height="10" fill="#7a4e04"/>
-    <rect x="210" y="25" width="2" height="10" fill="#7a4e04"/>
-    <rect x="216" y="25" width="2" height="10" fill="#7a4e04"/>
-    <rect x="222" y="25" width="2" height="10" fill="#7a4e04"/>
-    <rect x="228" y="25" width="2" height="10" fill="#7a4e04"/>
-    <rect x="234" y="25" width="2" height="10" fill="#7a4e04"/>
-
-    <!-- LEFT COLLAR -->
-    <rect x="142" y="20" width="12" height="20" rx="2" fill="#c8960a"/>
-    <rect x="144" y="22" width="4"  height="16" rx="1" fill="#e0b020"/>
-
-    <!-- LEFT 45lb — tallest, closest to collar, slim width -->
-    <rect x="114" y="8"  width="28" height="44" rx="3" fill="#8a1010"/>
-    <rect x="117" y="11" width="5"  height="38" rx="2" fill="#a81818"/>
-    <rect x="136" y="11" width="2"  height="38" rx="1" fill="#5a0808"/>
-    <rect x="122" y="16" width="10" height="28" rx="2" fill="#6e0c0c"/>
-
-    <!-- LEFT 35lb — medium -->
-    <rect x="90"  y="14" width="24" height="32" rx="3" fill="#7a0c0c"/>
-    <rect x="93"  y="17" width="4"  height="26" rx="1" fill="#961212"/>
-    <rect x="108" y="17" width="2"  height="26" rx="1" fill="#500808"/>
-    <rect x="98"  y="20" width="8"  height="20" rx="2" fill="#5e0a0a"/>
-
-    <!-- LEFT 25lb — slimmest, outermost -->
-    <rect x="74"  y="18" width="16" height="24" rx="2" fill="#6a0a0a"/>
-    <rect x="77"  y="21" width="3"  height="18" rx="1" fill="#881010"/>
-    <rect x="84"  y="21" width="2"  height="18" rx="1" fill="#480606"/>
-
-    <!-- LEFT end cap -->
-    <rect x="60"  y="26" width="14" height="8"  rx="3" fill="#241808"/>
-
-    <!-- RIGHT COLLAR -->
-    <rect x="266" y="20" width="12" height="20" rx="2" fill="#c8960a"/>
-    <rect x="268" y="22" width="4"  height="16" rx="1" fill="#e0b020"/>
-
-    <!-- RIGHT 45lb -->
-    <rect x="278" y="8"  width="28" height="44" rx="3" fill="#8a1010"/>
-    <rect x="281" y="11" width="5"  height="38" rx="2" fill="#a81818"/>
-    <rect x="300" y="11" width="2"  height="38" rx="1" fill="#5a0808"/>
-    <rect x="288" y="16" width="10" height="28" rx="2" fill="#6e0c0c"/>
-
-    <!-- RIGHT 35lb -->
-    <rect x="306" y="14" width="24" height="32" rx="3" fill="#7a0c0c"/>
-    <rect x="309" y="17" width="4"  height="26" rx="1" fill="#961212"/>
-    <rect x="324" y="17" width="2"  height="26" rx="1" fill="#500808"/>
-    <rect x="314" y="20" width="8"  height="20" rx="2" fill="#5e0a0a"/>
-
-    <!-- RIGHT 25lb -->
-    <rect x="330" y="18" width="16" height="24" rx="2" fill="#6a0a0a"/>
-    <rect x="333" y="21" width="3"  height="18" rx="1" fill="#881010"/>
-    <rect x="340" y="21" width="2"  height="18" rx="1" fill="#480606"/>
-
-    <!-- RIGHT end cap -->
-    <rect x="346" y="26" width="14" height="8"  rx="3" fill="#241808"/>
-  </svg>
-
-  <div class="brand-wordmark">
-    <span class="brand-mehanovic">Mehanovic&nbsp;</span>
-    <span class="brand-fitness">Fitness</span>
-    <sup class="brand-tm">™</sup>
-  </div>
-  <div class="brand-rule"></div>
-  <div class="brand-tagline">Forged in the Black Mountains</div>
-  <div class="brand-sub">Personal Training</div>
-</div>
-
-<!-- ── TAB BAR ── -->
-<div class="tab-bar">
-  <div class="tab active" data-day="push" onclick="switchDay('push')">Push <span class="tab-pip" id="pip-push"></span></div>
-  <div class="tab"        data-day="pull" onclick="switchDay('pull')">Pull <span class="tab-pip" id="pip-pull"></span></div>
-  <div class="tab"        data-day="legs" onclick="switchDay('legs')">Legs <span class="tab-pip" id="pip-legs"></span></div>
-  <div class="tab"        data-day="full" onclick="switchDay('full')">Full Body <span class="tab-pip" id="pip-full"></span></div>
-  <div class="tab"        data-day="abs"  onclick="switchDay('abs')">Abs <span class="tab-pip" id="pip-abs"></span></div>
-</div>
-
-<!-- ════════════════════════════════════════
-     PUSH
-════════════════════════════════════════ -->
-<div class="page push active" id="page-push">
-  <div class="day-header">
+<header class="wrap brand">
+  <div class="brand-id">
+    <svg class="brand-mark" aria-hidden="true"><use href="#barbell"/></svg>
     <div>
-      <div class="day-label-text">Day 1</div>
-      <div class="day-title">Push</div>
-      <div class="day-subtitle">Chest · Shoulders · Triceps</div>
-    </div>
-    <div class="progress-wrap">
-      <div class="progress-label">Progress</div>
-      <div class="progress-bar-bg"><div class="progress-bar-fill" id="bar-push"></div></div>
+      <div class="brand-name">Mehanovic <span>Fitness</span></div>
+      <div class="brand-tag">Forged in the Black Mountains</div>
     </div>
   </div>
+  <button class="icon-btn" id="themeBtn" type="button" aria-label="Switch appearance"></button>
+</header>
 
-  <div class="group">
-    <div class="group-label">Circuit A — Chest &amp; Triceps</div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge">A</div><div class="ex-name-wrap"><span class="ex-name">Bench Press</span><span class="ex-reps">8 reps</span></div></div>
-      <div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'push')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'push')"></button><button class="set-btn" data-n="3" onclick="toggleSet(this,'push')"></button></div>
-    </div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge">A</div><div class="ex-name-wrap"><span class="ex-name">Tight Grip Bench</span><span class="ex-reps">8 reps</span></div></div>
-      <div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'push')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'push')"></button><button class="set-btn" data-n="3" onclick="toggleSet(this,'push')"></button></div>
-    </div>
-  </div>
+<nav class="nav" aria-label="Workout days">
+  <div class="wrap"><div class="seg" id="seg" role="tablist"></div></div>
+</nav>
 
-  <div class="group">
-    <div class="group-label">Circuit B — Shoulders &amp; Chest</div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge">B</div><div class="ex-name-wrap"><span class="ex-name">Shoulder Press</span><span class="ex-reps">8 reps</span></div></div>
-      <div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'push')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'push')"></button><button class="set-btn" data-n="3" onclick="toggleSet(this,'push')"></button></div>
-    </div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge">B</div><div class="ex-name-wrap"><span class="ex-name">Dumbbell Flyes</span><span class="ex-note">or Cable Flyes at Different Angles when possible</span><span class="ex-reps">10 reps</span></div></div>
-      <div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'push')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'push')"></button><button class="set-btn" data-n="3" onclick="toggleSet(this,'push')"></button></div>
-    </div>
-  </div>
+<main class="wrap" id="main"></main>
 
-  <div class="group">
-    <div class="group-label">Circuit C — Shoulder &amp; Tricep Isolation</div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge hollow">C</div><div class="ex-name-wrap"><span class="ex-name">Lateral Raises</span><span class="ex-reps">8 reps</span></div></div>
-      <div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'push')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'push')"></button><button class="set-btn" data-n="3" onclick="toggleSet(this,'push')"></button></div>
-    </div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge hollow">C</div><div class="ex-name-wrap"><span class="ex-name">Tricep Pushdowns</span><span class="ex-reps">10 reps</span></div></div>
-      <div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'push')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'push')"></button><button class="set-btn" data-n="3" onclick="toggleSet(this,'push')"></button></div>
-    </div>
-  </div>
-
-  <div class="group">
-    <div class="group-label">Circuit D — Tricep Burnout</div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge hollow">D</div><div class="ex-name-wrap"><span class="ex-name">Dips</span><span class="ex-reps">6 reps</span></div></div>
-      <div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'push')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'push')"></button><button class="set-btn" data-n="3" onclick="toggleSet(this,'push')"></button></div>
-    </div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge hollow">D</div><div class="ex-name-wrap"><span class="ex-name">Cable Overhead Extensions</span><span class="ex-reps">8 reps</span></div></div>
-      <div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'push')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'push')"></button><button class="set-btn" data-n="3" onclick="toggleSet(this,'push')"></button></div>
-    </div>
-  </div>
-
-  <div class="group">
-    <div class="group-label">Circuit E — Final</div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge hollow">E</div><div class="ex-name-wrap"><span class="ex-name">Push Ups</span><span class="ex-reps">to failure</span></div></div>
-      <div class="set-btns"><button class="set-btn wide" data-label="SET 1" onclick="toggleSet(this,'push')"></button><button class="set-btn wide" data-label="SET 2" onclick="toggleSet(this,'push')"></button></div>
-    </div>
-  </div>
-
-  <div class="complete-banner" id="banner-push"><span class="complete-banner-emoji">💪</span><div class="complete-banner-text">Push Day Complete!</div></div>
-  <button class="reset-btn" onclick="resetDay('push')">Reset Workout</button>
-</div>
-
-<!-- ════════════════════════════════════════
-     PULL
-════════════════════════════════════════ -->
-<div class="page pull" id="page-pull">
-  <div class="day-header">
-    <div>
-      <div class="day-label-text">Day 2</div>
-      <div class="day-title">Pull</div>
-      <div class="day-subtitle">Back · Traps · Biceps</div>
-    </div>
-    <div class="progress-wrap">
-      <div class="progress-label">Progress</div>
-      <div class="progress-bar-bg"><div class="progress-bar-fill" id="bar-pull"></div></div>
-    </div>
-  </div>
-
-  <div class="group">
-    <div class="group-label">Circuit A — Vertical &amp; Horizontal Pull</div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge">A</div><div class="ex-name-wrap"><span class="ex-name">Pull-Ups</span><span class="ex-reps">6 reps</span></div></div>
-      <div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'pull')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'pull')"></button><button class="set-btn" data-n="3" onclick="toggleSet(this,'pull')"></button></div>
-    </div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge">A</div><div class="ex-name-wrap"><span class="ex-name">Dumbbell Rows</span><span class="ex-reps">8 reps</span></div></div>
-      <div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'pull')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'pull')"></button><button class="set-btn" data-n="3" onclick="toggleSet(this,'pull')"></button></div>
-    </div>
-  </div>
-
-  <div class="group">
-    <div class="group-label">Circuit B — Lats &amp; Traps</div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge">B</div><div class="ex-name-wrap"><span class="ex-name">Lat Pulldown</span><span class="ex-note">preferred: single arm pulldowns via cable</span><span class="ex-reps">10 reps</span></div></div>
-      <div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'pull')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'pull')"></button><button class="set-btn" data-n="3" onclick="toggleSet(this,'pull')"></button></div>
-    </div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge">B</div><div class="ex-name-wrap"><span class="ex-name">Barbell Shrugs</span><span class="ex-reps">6 reps</span></div></div>
-      <div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'pull')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'pull')"></button><button class="set-btn" data-n="3" onclick="toggleSet(this,'pull')"></button></div>
-    </div>
-  </div>
-
-  <div class="group">
-    <div class="group-label">Circuit C — Rear Delt &amp; Bicep Isolation</div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge hollow">C</div><div class="ex-name-wrap"><span class="ex-name">Face Pulls</span><span class="ex-reps">10 reps</span></div></div>
-      <div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'pull')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'pull')"></button><button class="set-btn" data-n="3" onclick="toggleSet(this,'pull')"></button></div>
-    </div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge hollow">C</div><div class="ex-name-wrap"><span class="ex-name">Hammer Curls</span><span class="ex-reps">12 reps</span></div></div>
-      <div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'pull')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'pull')"></button><button class="set-btn" data-n="3" onclick="toggleSet(this,'pull')"></button></div>
-    </div>
-  </div>
-
-  <div class="group">
-    <div class="group-label">Circuit D — Forearms &amp; Grip Finisher</div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge hollow">D</div><div class="ex-name-wrap"><span class="ex-name">Barbell Curls</span><span class="ex-reps">6 reps</span></div></div>
-      <div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'pull')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'pull')"></button><button class="set-btn" data-n="3" onclick="toggleSet(this,'pull')"></button></div>
-    </div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge hollow">D</div><div class="ex-name-wrap"><span class="ex-name">Forearm Curls</span><span class="ex-reps">6 reps</span></div></div>
-      <div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'pull')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'pull')"></button><button class="set-btn" data-n="3" onclick="toggleSet(this,'pull')"></button></div>
-    </div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge hollow">D</div><div class="ex-name-wrap"><span class="ex-name">Barbell Rotation</span><span class="ex-note">Switch grip mid-set</span><span class="ex-reps">3 × 30 sec</span></div></div>
-      <div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'pull')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'pull')"></button><button class="set-btn" data-n="3" onclick="toggleSet(this,'pull')"></button></div>
-    </div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge hollow">D</div><div class="ex-name-wrap"><span class="ex-name">Dead Hang</span><span class="ex-reps">to failure</span></div></div>
-      <div class="set-btns"><button class="set-btn wide" data-label="HANG" onclick="toggleSet(this,'pull')"></button></div>
-    </div>
-  </div>
-
-  <div class="group">
-    <div class="group-label">Circuit E — Final</div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge hollow">E</div><div class="ex-name-wrap"><span class="ex-name">Preacher Curls</span><span class="ex-reps">to failure</span></div></div>
-      <div class="set-btns"><button class="set-btn wide" data-label="SET 1" onclick="toggleSet(this,'pull')"></button><button class="set-btn wide" data-label="SET 2" onclick="toggleSet(this,'pull')"></button><button class="set-btn wide" data-label="SET 3" onclick="toggleSet(this,'pull')"></button></div>
-    </div>
-  </div>
-
-  <div class="complete-banner" id="banner-pull"><span class="complete-banner-emoji">🏋️</span><div class="complete-banner-text">Pull Day Complete!</div></div>
-  <button class="reset-btn" onclick="resetDay('pull')">Reset Workout</button>
-</div>
-
-<!-- ════════════════════════════════════════
-     LEGS
-════════════════════════════════════════ -->
-<div class="page legs" id="page-legs">
-  <div class="day-header">
-    <div>
-      <div class="day-label-text">Day 3</div>
-      <div class="day-title">Legs</div>
-      <div class="day-subtitle">Quads · Hamstrings · Calves</div>
-    </div>
-    <div class="progress-wrap">
-      <div class="progress-label">Progress</div>
-      <div class="progress-bar-bg"><div class="progress-bar-fill" id="bar-legs"></div></div>
-    </div>
-  </div>
-
-  <div class="group">
-    <div class="group-label">Circuit A — Quads, Calves &amp; Hamstrings</div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge">A</div><div class="ex-name-wrap"><span class="ex-name">Barbell Squat</span><span class="ex-reps">6 reps</span></div></div>
-      <div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'legs')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'legs')"></button><button class="set-btn" data-n="3" onclick="toggleSet(this,'legs')"></button></div>
-    </div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge">A</div><div class="ex-name-wrap"><span class="ex-name">Calf Raises</span><span class="ex-reps">12 reps</span></div></div>
-      <div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'legs')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'legs')"></button><button class="set-btn" data-n="3" onclick="toggleSet(this,'legs')"></button></div>
-    </div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge">A</div><div class="ex-name-wrap"><span class="ex-name">Leg Curls</span><span class="ex-reps">8 reps</span></div></div>
-      <div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'legs')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'legs')"></button><button class="set-btn" data-n="3" onclick="toggleSet(this,'legs')"></button></div>
-    </div>
-  </div>
-
-  <div class="group">
-    <div class="group-label">Circuit B — Hinge &amp; Unilateral</div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge">B</div><div class="ex-name-wrap"><span class="ex-name">Romanian Deadlift</span><span class="ex-reps">6 reps</span></div></div>
-      <div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'legs')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'legs')"></button><button class="set-btn" data-n="3" onclick="toggleSet(this,'legs')"></button></div>
-    </div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge">B</div><div class="ex-name-wrap"><span class="ex-name">Walking Lunges</span><span class="ex-reps">6 reps / leg</span></div></div>
-      <div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'legs')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'legs')"></button><button class="set-btn" data-n="3" onclick="toggleSet(this,'legs')"></button></div>
-    </div>
-  </div>
-
-  <div class="group">
-    <div class="group-label">Circuit C — Quad &amp; Glute Isolation</div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge hollow">C</div><div class="ex-name-wrap"><span class="ex-name">Leg Extensions</span><span class="ex-reps">6 reps</span></div></div>
-      <div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'legs')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'legs')"></button><button class="set-btn" data-n="3" onclick="toggleSet(this,'legs')"></button></div>
-    </div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge hollow">C</div><div class="ex-name-wrap"><span class="ex-name">Glute Extensions</span><span class="ex-reps">6 reps</span></div></div>
-      <div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'legs')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'legs')"></button><button class="set-btn" data-n="3" onclick="toggleSet(this,'legs')"></button></div>
-    </div>
-  </div>
-
-  <div class="complete-banner" id="banner-legs"><span class="complete-banner-emoji">🦵</span><div class="complete-banner-text">Leg Day Complete!</div></div>
-  <button class="reset-btn" onclick="resetDay('legs')">Reset Workout</button>
-</div>
-
-<!-- ════════════════════════════════════════
-     FULL BODY
-════════════════════════════════════════ -->
-<div class="page full" id="page-full">
-  <div class="day-header">
-    <div>
-      <div class="day-label-text">Optional</div>
-      <div class="day-title">Full Body</div>
-      <div class="day-subtitle">Occasional Extra Day</div>
-    </div>
-    <div class="progress-wrap">
-      <div class="progress-label">Progress</div>
-      <div class="progress-bar-bg"><div class="progress-bar-fill" id="bar-full"></div></div>
-    </div>
-  </div>
-
-  <div class="group">
-    <div class="group-label">Circuit A — Lower &amp; Push</div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge">A</div><div class="ex-name-wrap"><span class="ex-name">Barbell Squat</span><span class="ex-reps">6 reps</span></div></div>
-      <div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'full')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'full')"></button></div>
-    </div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge">A</div><div class="ex-name-wrap"><span class="ex-name">Bench Press</span><span class="ex-reps">8 reps</span></div></div>
-      <div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'full')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'full')"></button></div>
-    </div>
-  </div>
-
-  <div class="group">
-    <div class="group-label">Circuit B — Hinge &amp; Pull</div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge">B</div><div class="ex-name-wrap"><span class="ex-name">Romanian Deadlift</span><span class="ex-reps">6 reps</span></div></div>
-      <div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'full')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'full')"></button></div>
-    </div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge">B</div><div class="ex-name-wrap"><span class="ex-name">Weighted Pull-Ups / Rows</span><span class="ex-reps">6 reps</span></div></div>
-      <div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'full')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'full')"></button></div>
-    </div>
-  </div>
-
-  <div class="group">
-    <div class="group-label">Circuit C — Upper Body Isolation</div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge hollow">C</div><div class="ex-name-wrap"><span class="ex-name">Shoulder Press</span><span class="ex-reps">8 reps</span></div></div>
-      <div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'full')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'full')"></button></div>
-    </div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge hollow">C</div><div class="ex-name-wrap"><span class="ex-name">Hammer Curls</span><span class="ex-reps">12 reps</span></div></div>
-      <div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'full')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'full')"></button></div>
-    </div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge hollow">C</div><div class="ex-name-wrap"><span class="ex-name">Tricep Pushdowns</span><span class="ex-reps">10 reps</span></div></div>
-      <div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'full')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'full')"></button></div>
-    </div>
-    <div class="ex-row">
-      <div class="ex-left"><div class="circuit-badge hollow">C</div><div class="ex-name-wrap"><span class="ex-name">Calf Raises</span><span class="ex-reps">12 reps</span></div></div>
-      <div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'full')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'full')"></button></div>
-    </div>
-  </div>
-
-  <div class="callout">Lower volume by design — use as a bonus session. Focus on quality reps, not chasing PRs.</div>
-  <div class="complete-banner" id="banner-full"><span class="complete-banner-emoji">⚡</span><div class="complete-banner-text">Full Body Complete!</div></div>
-  <button class="reset-btn" onclick="resetDay('full')">Reset Workout</button>
-</div>
-
-<!-- ════════════════════════════════════════
-     ABS
-════════════════════════════════════════ -->
-<div class="page abs" id="page-abs">
-  <div class="day-header">
-    <div>
-      <div class="day-label-text">Every Other Day</div>
-      <div class="day-title">Abs</div>
-      <div class="day-subtitle">~8–10 min · 2–3 Rounds</div>
-    </div>
-    <div class="progress-wrap">
-      <div class="progress-label">Progress</div>
-      <div class="progress-bar-bg"><div class="progress-bar-fill" id="bar-abs"></div></div>
-    </div>
-  </div>
-
-  <div class="callout">Run as a circuit — no rest between exercises. Rest 60–90 sec between rounds.</div>
-
-  <div class="group">
-    <div class="group-label">Circuit — 2–3 Rounds</div>
-    <div class="ex-row"><div class="ex-left"><div class="ex-name-wrap"><span class="ex-name">Plank</span><span class="ex-reps">45–60 sec</span></div></div><div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'abs')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'abs')"></button><button class="set-btn" data-n="3" onclick="toggleSet(this,'abs')"></button></div></div>
-    <div class="ex-row"><div class="ex-left"><div class="ex-name-wrap"><span class="ex-name">Hanging Leg Raises</span><span class="ex-reps">10–12 reps</span></div></div><div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'abs')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'abs')"></button><button class="set-btn" data-n="3" onclick="toggleSet(this,'abs')"></button></div></div>
-    <div class="ex-row"><div class="ex-left"><div class="ex-name-wrap"><span class="ex-name">Ab Wheel Rollouts</span><span class="ex-reps">8–10 reps</span></div></div><div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'abs')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'abs')"></button><button class="set-btn" data-n="3" onclick="toggleSet(this,'abs')"></button></div></div>
-    <div class="ex-row"><div class="ex-left"><div class="ex-name-wrap"><span class="ex-name">Bicycle Crunches</span><span class="ex-reps">20 reps</span></div></div><div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'abs')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'abs')"></button><button class="set-btn" data-n="3" onclick="toggleSet(this,'abs')"></button></div></div>
-    <div class="ex-row"><div class="ex-left"><div class="ex-name-wrap"><span class="ex-name">Dead Bug</span><span class="ex-reps">10 reps / side</span></div></div><div class="set-btns"><button class="set-btn" data-n="1" onclick="toggleSet(this,'abs')"></button><button class="set-btn" data-n="2" onclick="toggleSet(this,'abs')"></button><button class="set-btn" data-n="3" onclick="toggleSet(this,'abs')"></button></div></div>
-  </div>
-
-  <div class="complete-banner" id="banner-abs"><span class="complete-banner-emoji">🔥</span><div class="complete-banner-text">Abs Done!</div></div>
-  <button class="reset-btn" onclick="resetDay('abs')">Reset Workout</button>
-</div>
-
-<!-- ════════════════════════════════════════
-     BADGE — always visible, outside page tabs
-════════════════════════════════════════ -->
-<div style="max-width:300px;margin:44px auto 24px;padding:0 20px;">
-  <svg width="100%" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" role="img">
-    <title>Mehanovic Fitness Emblem</title>
+<div class="wrap">
+  <svg class="emblem" viewBox="0 0 240 240" role="img" aria-label="Mehanovic Fitness emblem">
     <defs>
-      <clipPath id="badgeClip">
-        <circle cx="150" cy="150" r="148"/>
-      </clipPath>
-      <path id="arcTop" d="M 36,150 A 114,114 0 0,1 264,150"/>
-      <path id="arcBot" d="M 50,165 A 100,100 0 0,0 250,165"/>
+      <path id="arcTop" d="M 20,120 A 100,100 0 0 1 220,120"/>
+      <path id="arcBot" d="M 13,120 A 107,107 0 0 0 227,120"/>
     </defs>
-
-    <!-- Background fill clipped to circle -->
-    <circle cx="150" cy="150" r="148" fill="#0a0704"/>
-
-    <!-- Rings -->
-    <circle cx="150" cy="150" r="148" fill="none" stroke="#c8960a" stroke-width="3"/>
-    <circle cx="150" cy="150" r="140" fill="none" stroke="#3a2808" stroke-width="1"/>
-    <circle cx="150" cy="150" r="133" fill="none" stroke="#c8960a" stroke-width="1"/>
-
-    <!-- Cardinal star points -->
-    <polygon points="150,5  153,14 161,14 155,19 158,28 150,23 142,28 145,19 139,14 147,14" fill="#c8960a"/>
-    <polygon points="150,295 153,286 161,286 155,281 158,272 150,277 142,272 145,281 139,286 147,286" fill="#c8960a"/>
-    <polygon points="5,150  14,147 14,139 19,145 28,142 23,150 28,158 19,155 14,161 14,153" fill="#c8960a"/>
-    <polygon points="295,150 286,153 286,161 281,155 272,158 277,150 272,142 281,145 286,139 286,147" fill="#c8960a"/>
-
-    <!-- Arc: MEHANOVIC FITNESS top -->
-    <text font-family="Arial Black, Arial, sans-serif" font-size="14" font-weight="900" letter-spacing="3.5" fill="#c8960a">
-      <textPath href="#arcTop" startOffset="50%" text-anchor="middle">MEHANOVIC FITNESS</textPath>
-    </text>
-
-    <!-- Arc: FORGED IN THE BLACK MOUNTAINS bottom -->
-    <text font-family="Arial, sans-serif" font-size="9" font-weight="700" letter-spacing="2.5" fill="#8a6208">
-      <textPath href="#arcBot" startOffset="50%" text-anchor="middle">FORGED IN THE BLACK MOUNTAINS</textPath>
-    </text>
-
-    <!-- Horizontal gold rules with diamond pips -->
-    <rect x="70" y="116" width="160" height="1.5" rx="1" fill="#c8960a" opacity="0.7"/>
-    <polygon points="150,112 154,116 150,120 146,116" fill="#c8960a"/>
-    <rect x="70" y="194" width="160" height="1.5" rx="1" fill="#c8960a" opacity="0.7"/>
-    <polygon points="150,190 154,194 150,198 146,194" fill="#c8960a"/>
-
-    <!-- ── MINI BARBELL centred at y=150 ── -->
-    <!-- Bar -->
-    <rect x="70" y="145" width="160" height="10" rx="3" fill="#b8820a"/>
-    <rect x="70" y="145" width="160" height="3"  rx="2" fill="#e6c040"/>
-    <rect x="70" y="152" width="160" height="3"  rx="1" fill="#7a4e04"/>
-    <!-- Knurling -->
-    <rect x="125" y="145" width="2" height="10" fill="#7a4e04"/>
-    <rect x="130" y="145" width="2" height="10" fill="#7a4e04"/>
-    <rect x="135" y="145" width="2" height="10" fill="#7a4e04"/>
-    <rect x="140" y="145" width="2" height="10" fill="#7a4e04"/>
-    <rect x="145" y="145" width="2" height="10" fill="#7a4e04"/>
-    <rect x="150" y="145" width="2" height="10" fill="#7a4e04"/>
-    <rect x="155" y="145" width="2" height="10" fill="#7a4e04"/>
-    <rect x="160" y="145" width="2" height="10" fill="#7a4e04"/>
-    <rect x="165" y="145" width="2" height="10" fill="#7a4e04"/>
-    <!-- Left collar -->
-    <rect x="103" y="139" width="11" height="22" rx="2" fill="#c8960a"/>
-    <rect x="105" y="141" width="4"  height="18" rx="1" fill="#e0b020"/>
-    <!-- Left 45lb plate (tallest, closest to collar) -->
-    <rect x="82"  y="129" width="21" height="42" rx="3" fill="#8a1010"/>
-    <rect x="84"  y="131" width="4"  height="38" rx="1" fill="#a81818"/>
-    <rect x="99"  y="131" width="2"  height="38" rx="1" fill="#5a0808"/>
-    <rect x="89"  y="135" width="8"  height="30" rx="1" fill="#6e0c0c"/>
-    <!-- Left 35lb plate -->
-    <rect x="70"  y="133" width="12" height="34" rx="2" fill="#7a0c0c"/>
-    <rect x="72"  y="135" width="3"  height="30" rx="1" fill="#961212"/>
-    <!-- Right collar -->
-    <rect x="186" y="139" width="11" height="22" rx="2" fill="#c8960a"/>
-    <rect x="188" y="141" width="4"  height="18" rx="1" fill="#e0b020"/>
-    <!-- Right 45lb plate -->
-    <rect x="197" y="129" width="21" height="42" rx="3" fill="#8a1010"/>
-    <rect x="199" y="131" width="4"  height="38" rx="1" fill="#a81818"/>
-    <rect x="214" y="131" width="2"  height="38" rx="1" fill="#5a0808"/>
-    <rect x="203" y="135" width="8"  height="30" rx="1" fill="#6e0c0c"/>
-    <!-- Right 35lb plate -->
-    <rect x="218" y="133" width="12" height="34" rx="2" fill="#7a0c0c"/>
-    <rect x="220" y="135" width="3"  height="30" rx="1" fill="#961212"/>
-
-    <!-- MEHANOVIC wordmark -->
-    <text x="150" y="136" text-anchor="middle"
-          font-family="Arial Black, Arial, sans-serif"
-          font-size="18" font-weight="900" letter-spacing="1" fill="#c8960a">MEHANOVIC</text>
-
-    <!-- FITNESS -->
-    <text x="150" y="185" text-anchor="middle"
-          font-family="Arial Black, Arial, sans-serif"
-          font-size="12" font-weight="900" letter-spacing="4" fill="#a81818">FITNESS</text>
-
-    <!-- Personal Training -->
-    <text x="150" y="200" text-anchor="middle"
-          font-family="Georgia, serif"
-          font-size="9" font-style="italic" letter-spacing="1" fill="#7a5808">Personal Training</text>
-
-    <!-- Dot ornaments flanking Personal Training -->
-    <circle cx="120" cy="198" r="2" fill="#8a1010"/>
-    <circle cx="180" cy="198" r="2" fill="#8a1010"/>
-
-    <!-- Subtle eagle arc above wordmark -->
-    <path d="M122,122 Q138,112 150,115 Q162,112 178,122"
-          fill="none" stroke="#c8960a" stroke-width="1" opacity="0.35"/>
+    <circle class="e-gold" cx="120" cy="120" r="118" stroke-width="1.5"/>
+    <circle class="e-line" cx="120" cy="120" r="90" stroke-width="1"/>
+    <text class="t-top"><textPath href="#arcTop" startOffset="50%" text-anchor="middle">MEHANOVIC FITNESS</textPath></text>
+    <text class="t-bot"><textPath href="#arcBot" startOffset="50%" text-anchor="middle">FORGED IN THE BLACK MOUNTAINS</textPath></text>
+    <circle class="e-dot" cx="16" cy="120" r="2"/><circle class="e-dot" cx="224" cy="120" r="2"/>
+    <use href="#barbell" x="68" y="88" width="104" height="42"/>
+    <text class="t-mid" x="120" y="156" text-anchor="middle">PERSONAL TRAINING</text>
   </svg>
+</div>
+
+<div class="dock">
+  <button class="rest-pill glass" id="restPill" type="button">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9.5 2.5h5"/></svg>
+    Rest <small>1:00</small>
+  </button>
+  <div class="rest-panel glass" id="restPanel" hidden>
+    <svg class="t-ring" viewBox="0 0 48 48" aria-hidden="true">
+      <circle class="track" cx="24" cy="24" r="20"/>
+      <circle class="arc" id="tArc" cx="24" cy="24" r="20"/>
+    </svg>
+    <div class="t-mid">
+      <div class="t-label" id="tLabel">Rest</div>
+      <div class="t-time" id="tTime" aria-live="off">1:00</div>
+    </div>
+    <div class="t-btns">
+      <button class="icon-btn" id="tRestart" type="button" aria-label="Restart timer"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.6-5.9M4 4v4.5h4.5"/></svg></button>
+      <button class="icon-btn primary" id="tToggle" type="button" aria-label="Pause"></button>
+      <button class="icon-btn" id="tClose" type="button" aria-label="Close timer"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+  </div>
 </div>
 
 <script>
-  // ── LIGHT / DARK MODE ──
-  function toggleMode() {
-    const isLight = document.body.classList.toggle('light');
-    document.getElementById('modeIcon').textContent  = isLight ? '🌙' : '☀️';
-    document.getElementById('modeLabel').textContent = isLight ? 'Dark' : 'Light';
-    try { localStorage.setItem('mf-mode', isLight ? 'light' : 'dark'); } catch(e){}
-  }
-  try {
-    if (localStorage.getItem('mf-mode') === 'light') {
-      document.body.classList.add('light');
-      document.getElementById('modeIcon').textContent  = '🌙';
-      document.getElementById('modeLabel').textContent = 'Dark';
-    }
-  } catch(e){}
+(function () {
+  /* ── Program ── [name, reps, note, sets]  (sets: a count, or a list of labels) */
+  var LIFT_NOTE = 'On the big lifts, stop 1–2 reps short of failure. The rest timer starts on its own after each round: 2 min for compound circuits, 1 min for isolation.';
+  var DAYS = [
+    { id: 'push', tab: 'Push', tag: 'Day 1', title: 'Push', sub: 'Chest · Shoulders · Triceps', done: 'Push day complete', noteBefore: LIFT_NOTE, groups: [
+      { c: 'A', name: 'Chest & Side Delts', solid: true, ex: [['Bench Press', '8 reps', '', 3, 'c'], ['Lateral Raises', '12–15 reps', '', 3, 'i']] },
+      { c: 'B', name: 'Shoulders & Chest', solid: true, ex: [['Shoulder Press', '8 reps', '', 3], ['Dumbbell Flyes', '10 reps', 'or cable flyes at different angles when possible', 3]] },
+      { c: 'C', name: 'Upper Chest & Side Delts', solid: true, ex: [['Incline Dumbbell Press', '8–10 reps', 'flat bench only? use tight grip bench', 3, 'c'], ['Cable Lateral Raises', '12–15 reps', '', 3, 'i']] },
+      { c: 'D', name: 'Tricep Finisher', ex: [['Cable Overhead Extensions', '10–12 reps', 'deep stretch at the bottom', 3], ['Tricep Pushdowns', '10–12 reps', '', 3]] },
+      { c: 'E', name: 'Final', ex: [['Push Ups', 'To failure', '', ['Set 1']]] }
+    ]},
+    { id: 'pull', tab: 'Pull', tag: 'Day 2', title: 'Pull', sub: 'Back · Traps · Biceps', done: 'Pull day complete', noteBefore: LIFT_NOTE, groups: [
+      { c: 'A', name: 'Vertical & Horizontal Pull', solid: true, ex: [['Pull-Ups', '6 reps', '', 3], ['Dumbbell Rows', '8 reps', '', 3]] },
+      { c: 'B', name: 'Lats & Traps', solid: true, ex: [['Lat Pulldown', '10 reps', 'preferred: single arm pulldowns via cable', 3], ['Barbell Shrugs', '10–12 reps', '', 3]] },
+      { c: 'C', name: 'Rear Delts, Biceps & Calves', ex: [['Face Pulls', '10 reps', '', 3], ['Hammer Curls', '12 reps', '', 3], ['Calf Raises', '12 reps', 'on a plate edge, pause in the bottom stretch', 3]] },
+      { c: 'D', name: 'Forearms & Grip Finisher', ex: [['Barbell Curls', '8–10 reps', '', 3], ['Forearm Curls', '12–15 reps', '', 3], ['Barbell Rotation', '3 × 30 sec', 'switch grip mid-set', 3], ['Dead Hang', 'To failure', '', ['Hang']]] },
+      { c: 'E', name: 'Final', ex: [['Preacher Curls', 'To failure', '', ['Set 1', 'Set 2', 'Set 3']]] }
+    ]},
+    { id: 'legs', tab: 'Legs', tag: 'Day 3', title: 'Legs', sub: 'Quads · Hamstrings · Calves', done: 'Leg day complete', noteBefore: LIFT_NOTE, groups: [
+      { c: 'A', name: 'Quads, Calves & Hamstrings', solid: true, ex: [['Barbell Squat', '6 reps', '', 3], ['Calf Raises', '12 reps', 'on a plate edge, pause in the bottom stretch, finish with bottom-half reps', 4], ['Leg Curls', '10–12 reps', 'one leg at a time with the ankle strap', 4]] },
+      { c: 'B', name: 'Hinge & Unilateral', solid: true, ex: [['Cable Pull-Throughs', '12–15 reps', 'hinge at the hips, squeeze glutes at the top', 3], ['Walking Lunges', '6 reps / leg', '', 3]] },
+      { c: 'C', name: 'Quad & Glute Isolation', ex: [['Leg Extensions', '12–15 reps', '', 3], ['Glute Extensions', '12–15 reps', '', 3]] },
+      { c: 'D', name: 'Hamstring Finisher', ex: [['Nordic Curls', '4–8 slow reps', 'heels under the loaded bar, lower as slowly as you can', 3]] }
+    ]},
+    { id: 'full', tab: 'Full Body', tag: 'Day 4', title: 'Full Body', sub: 'Second weekly hit for every muscle', done: 'Full body complete',
+      noteAfter: 'Lower volume by design. This is the second time each muscle gets trained this week, so focus on quality reps, not chasing PRs.', groups: [
+      { c: 'A', name: 'Lower & Push', solid: true, ex: [['Barbell Squat', '6 reps', '', 2], ['Bench Press', '8 reps', '', 2]] },
+      { c: 'B', name: 'Hamstrings & Pull', solid: true, ex: [['Leg Curls', '10–12 reps', '', 3], ['Weighted Pull-Ups / Rows', '6 reps', '', 2]] },
+      { c: 'C', name: 'Upper Body Isolation', ex: [['Shoulder Press', '8 reps', '', 2], ['Hammer Curls', '12 reps', '', 2], ['Tricep Pushdowns', '10 reps', '', 2], ['Calf Raises', '12 reps', '', 3]] }
+    ]},
+    { id: 'abs', tab: 'Abs', tag: 'Every other day', title: 'Abs', sub: '8–10 min · 2–3 rounds', done: 'Abs done',
+      noteBefore: 'Run as a circuit with no rest between exercises. Rest 60–90 sec between rounds.', groups: [
+      { c: '', name: '2–3 rounds', label: 'Circuit', rest: 90, ex: [['Plank', '45–60 sec', '', 3], ['Hanging Leg Raises', '10–12 reps', '', 3], ['Ab Wheel Rollouts', '8–10 reps', '', 3], ['Bicycle Crunches', '20 reps', '', 3], ['Dead Bug', '10 reps / side', '', 3]] }
+    ]}
+  ];
 
-  function switchDay(day) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelector(`.tab[data-day="${day}"]`).classList.add('active');
-    document.getElementById(`page-${day}`).classList.add('active');
-  }
+  var CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  var RING_C = 2 * Math.PI * 30;
 
-  function toggleSet(btn, day) {
-    btn.classList.toggle('complete');
-    updateProgress(day);
-    checkCompletion(day);
-  }
+  /* ── Storage (per-browser convenience; the page works without it) ── */
+  function load(k, d) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
+  function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
 
-  function updateProgress(day) {
-    const page = document.getElementById(`page-${day}`);
-    const all  = page.querySelectorAll('.set-btn');
-    const done = page.querySelectorAll('.set-btn.complete');
-    const pct  = all.length ? (done.length / all.length) * 100 : 0;
-    document.getElementById(`bar-${day}`).style.width = pct + '%';
-    document.getElementById(`pip-${day}`).classList.toggle('visible', done.length > 0);
-  }
+  var KEY = 'mf-sets-v3';
+  var state = load(KEY, {});          // { push: { "0": true, ... } }
+  var current = load('mf-day', 'push');
+  if (!DAYS.some(function (d) { return d.id === current; })) current = 'push';
 
-  function checkCompletion(day) {
-    const page   = document.getElementById(`page-${day}`);
-    const all    = page.querySelectorAll('.set-btn');
-    const done   = page.querySelectorAll('.set-btn.complete');
-    const banner = document.getElementById(`banner-${day}`);
-    if (all.length && done.length === all.length) {
-      banner.classList.add('show');
-      banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    } else {
-      banner.classList.remove('show');
-    }
-  }
+  var main = document.getElementById('main');
+  var seg = document.getElementById('seg');
 
-  function resetDay(day) {
-    const page = document.getElementById(`page-${day}`);
-    page.querySelectorAll('.set-btn').forEach(b => b.classList.remove('complete'));
-    document.getElementById(`banner-${day}`).classList.remove('show');
-    updateProgress(day);
-  }
-
-  /* ── REST TIMER ── */
-  const TOTAL   = 60;
-  const CIRCUMF = 2 * Math.PI * 22;
-  let timerSeconds  = TOTAL;
-  let timerInterval = null;
-  let timerRunning  = false;
-  let timerOpen     = false;
-
-  const timerBar      = document.getElementById('timerBar');
-  const timerDisplay  = document.getElementById('timerDisplay');
-  const timerLabel    = document.getElementById('timerLabel');
-  const timerStartBtn = document.getElementById('timerStartBtn');
-  const timerRing     = document.getElementById('timerRing');
-  const restFab       = document.getElementById('restFab');
-  const fabDot        = document.getElementById('fabDot');
-  const fabLabel      = document.getElementById('fabLabel');
-
-  function formatTime(s) { return Math.floor(s/60)+':'+ String(s%60).padStart(2,'0'); }
-
-  function updateRing(s) {
-    timerRing.style.strokeDashoffset = CIRCUMF * (1 - s/TOTAL);
-    const u = s <= 10;
-    timerRing.classList.toggle('urgent', u);
-    timerDisplay.classList.toggle('urgent', u);
-    fabDot.classList.toggle('urgent', u);
+  function totals(day) {
+    var total = 0;
+    day.groups.forEach(function (g) { g.ex.forEach(function (e) { total += Array.isArray(e[3]) ? e[3].length : e[3]; }); });
+    var s = state[day.id] || {}, done = 0;
+    for (var k in s) if (s[k] && +k < total) done++;
+    return { total: total, done: done };
   }
 
-  function renderTimer() { timerDisplay.textContent = formatTime(timerSeconds); updateRing(timerSeconds); }
+  /* ── Tabs ── */
+  DAYS.forEach(function (d) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.id = 'tab-' + d.id; b.setAttribute('role', 'tab');
+    b.innerHTML = esc(d.tab) + '<i class="pip" id="pip-' + d.id + '"></i>';
+    b.addEventListener('click', function () { show(d.id); });
+    seg.appendChild(b);
+  });
 
-  function timerToggle() {
-    if (timerRunning) {
-      clearInterval(timerInterval); timerInterval = null; timerRunning = false;
-      timerStartBtn.textContent = '▶'; timerStartBtn.classList.remove('running');
-      timerLabel.textContent = 'Paused'; fabLabel.textContent = formatTime(timerSeconds);
-    } else {
-      if (timerSeconds === 0) { timerSeconds = TOTAL; renderTimer(); }
-      timerRunning = true; timerStartBtn.textContent = '⏸'; timerStartBtn.classList.add('running');
-      timerLabel.textContent = 'Rest Timer';
-      timerInterval = setInterval(() => {
-        timerSeconds--;
-        renderTimer();
-        fabLabel.textContent = formatTime(timerSeconds);
-        if (timerSeconds <= 0) {
-          clearInterval(timerInterval); timerInterval = null; timerRunning = false;
-          timerStartBtn.textContent = '↺'; timerStartBtn.classList.remove('running');
-          timerLabel.textContent = 'Go! 💪';
-          timerDisplay.textContent = 'GO!'; timerDisplay.classList.add('urgent');
-          fabLabel.textContent = 'Go!';
-          if (navigator.vibrate) navigator.vibrate([200,100,200]);
+  function paintPips() {
+    DAYS.forEach(function (d) {
+      var t = totals(d), p = document.getElementById('pip-' + d.id);
+      p.classList.toggle('on', t.done > 0);
+      p.classList.toggle('full', t.done === t.total);
+    });
+  }
+
+  /* ── Page ── */
+  function show(id) {
+    current = id; save('mf-day', id);
+    var day = DAYS.filter(function (d) { return d.id === id; })[0];
+    DAYS.forEach(function (d) { document.getElementById('tab-' + d.id).setAttribute('aria-selected', d.id === id ? 'true' : 'false'); });
+    var s = state[id] || {}, n = 0, hasBadges = false;
+
+    var h = '<section class="page">' +
+      '<div class="day-head"><div><div class="eyebrow">' + esc(day.tag) + '</div>' +
+      '<h1 class="day-title">' + esc(day.title) + '</h1><div class="day-sub">' + esc(day.sub) + '</div></div>' +
+      '<div class="ring" id="ring"><svg viewBox="0 0 76 76" aria-hidden="true"><circle class="track" cx="38" cy="38" r="30"/>' +
+      '<circle class="arc" id="ringArc" cx="38" cy="38" r="30" stroke-dasharray="' + RING_C + '" stroke-dashoffset="' + RING_C + '"/></svg>' +
+      '<div class="ring-num"><div><b id="ringPct">0%</b><small id="ringCount"></small></div></div></div></div>';
+
+    if (day.noteBefore) h += '<p class="note">' + esc(day.noteBefore) + '</p>';
+
+    day.groups.forEach(function (g, gi) {
+      if (g.c) hasBadges = true;
+      h += '<div class="group"><div class="group-head"><h3>' + esc(g.label || ('Circuit ' + g.c)) + '</h3><span>' + esc(g.name) + '</span></div><div class="card">';
+      g.ex.forEach(function (e) {
+        var labels = Array.isArray(e[3]) ? e[3] : null, count = labels ? labels.length : e[3];
+        h += '<div class="row' + (g.c ? ' has-badge' : '') + '">';
+        if (g.c) h += '<div class="badge' + ((e[4] ? e[4] === 'c' : g.solid) ? '' : ' hollow') + '">' + esc(g.c) + '</div>';
+        h += '<div class="ex"><div class="ex-name">' + esc(e[0]) + '</div><div class="ex-reps">' + esc(e[1]) + '</div>' +
+          (e[2] ? '<div class="ex-note">' + esc(e[2]) + '</div>' : '') + '</div><div class="sets">';
+        for (var i = 0; i < count; i++, n++) {
+          var lab = labels ? labels[i] : String(i + 1);
+          h += '<button type="button" class="set' + (labels ? ' wide' : '') + '" data-i="' + n + '" data-g="' + gi + '" data-r="' + i + '" aria-pressed="' + (s[n] ? 'true' : 'false') +
+            '" aria-label="' + esc(e[0]) + ', ' + esc(labels ? lab : 'set ' + lab) + '">' + esc(lab) + CHECK + '</button>';
         }
-      }, 1000);
-    }
+        h += '</div></div>';
+      });
+      h += '</div></div>';
+    });
+
+    if (day.noteAfter) h += '<p class="note">' + esc(day.noteAfter) + '</p>';
+    h += '<div class="banner" id="banner" hidden><div class="banner-check">' + CHECK + '</div><b>' + esc(day.done) + '</b><span>Every set checked off. Nice work.</span></div>';
+    h += '<button type="button" class="reset" id="resetBtn">Reset workout</button>';
+    if (hasBadges) h += '<div class="legend"><i><span class="badge"></span>Compound</i><i><span class="badge hollow"></span>Isolation</i></div>';
+    h += '</section>';
+    main.innerHTML = h;
+
+    main.querySelectorAll('.row').forEach(markRow);
+    document.getElementById('resetBtn').addEventListener('click', function () {
+      state[id] = {}; save(KEY, state); show(id);
+    });
+    requestAnimationFrame(function () { paintProgress(day, false); });
+    paintPips();
   }
 
-  function fabClicked() {
-    if (!timerOpen) {
-      timerOpen = true; timerBar.classList.add('visible'); restFab.classList.add('hidden');
-      timerSeconds = TOTAL; renderTimer();
-      timerLabel.textContent = 'Rest Timer'; timerStartBtn.textContent = '▶';
-      timerStartBtn.classList.remove('running'); timerRunning = false;
-      timerToggle();
-    } else {
-      clearInterval(timerInterval); timerRunning = false; timerSeconds = TOTAL;
-      renderTimer(); timerLabel.textContent = 'Rest Timer';
-      timerStartBtn.textContent = '▶'; timerDisplay.classList.remove('urgent');
-      timerToggle();
-    }
+  function markRow(row) {
+    var all = row.querySelectorAll('.set'), on = row.querySelectorAll('.set[aria-pressed="true"]');
+    row.classList.toggle('done', all.length > 0 && all.length === on.length);
   }
 
-  timerBar.addEventListener('click', function(e) {
-    if (e.target === timerDisplay || e.target === timerLabel || e.target.classList.contains('timer-center')) {
-      if (!timerRunning) {
-        timerOpen = false; clearInterval(timerInterval); timerRunning = false;
-        timerBar.classList.remove('visible'); restFab.classList.remove('hidden');
-        timerSeconds = TOTAL; renderTimer(); fabLabel.textContent = 'Rest';
-        fabDot.classList.remove('urgent'); timerDisplay.classList.remove('urgent');
-      }
+  function paintProgress(day, announce) {
+    var t = totals(day), frac = t.total ? t.done / t.total : 0;
+    document.getElementById('ringArc').style.strokeDashoffset = RING_C * (1 - frac);
+    document.getElementById('ringPct').textContent = Math.round(frac * 100) + '%';
+    document.getElementById('ringCount').textContent = t.done + ' of ' + t.total;
+    document.getElementById('ring').classList.toggle('complete', frac === 1);
+    var banner = document.getElementById('banner'), was = banner.hidden;
+    banner.hidden = frac !== 1;
+    if (announce && was && frac === 1) banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  main.addEventListener('click', function (ev) {
+    var btn = ev.target.closest('.set'); if (!btn) return;
+    var on = btn.getAttribute('aria-pressed') !== 'true';
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    state[current] = state[current] || {};
+    if (on) state[current][btn.dataset.i] = true; else delete state[current][btn.dataset.i];
+    save(KEY, state);
+    markRow(btn.closest('.row'));
+    var day = DAYS.filter(function (d) { return d.id === current; })[0];
+    paintProgress(day, true);
+    paintPips();
+    /* Auto-rest: when this round of the circuit is checked off on every exercise */
+    if (on) {
+      var round = main.querySelectorAll('.set[data-g="' + btn.dataset.g + '"][data-r="' + btn.dataset.r + '"]');
+      var roundDone = Array.prototype.every.call(round, function (b) { return b.getAttribute('aria-pressed') === 'true'; });
+      var t = totals(day), g = day.groups[+btn.dataset.g];
+      if (roundDone && t.done < t.total) startRest(g.rest || (g.solid ? 120 : 60));
     }
   });
 
-  renderTimer();
+  /* ── Appearance ── */
+  var root = document.documentElement, themeBtn = document.getElementById('themeBtn');
+  var SUN = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></svg>';
+  var MOON = '<svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>';
+  function isDark() {
+    var t = root.getAttribute('data-theme');
+    if (t) return t === 'dark';
+    return !!(window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches);
+  }
+  function paintTheme() { themeBtn.innerHTML = isDark() ? SUN : MOON; themeBtn.setAttribute('aria-label', isDark() ? 'Switch to light appearance' : 'Switch to dark appearance'); }
+  var savedTheme = load('mf-theme', null);
+  if (savedTheme === 'light' || savedTheme === 'dark') root.setAttribute('data-theme', savedTheme);
+  themeBtn.addEventListener('click', function () {
+    var next = isDark() ? 'light' : 'dark';
+    root.setAttribute('data-theme', next); save('mf-theme', next); paintTheme();
+  });
+  if (window.matchMedia) { try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', paintTheme); } catch (e) {} }
+  new MutationObserver(paintTheme).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+  paintTheme();
+
+  /* ── Rest timer (60 s) ── */
+  var TOTAL = 60, T_C = 2 * Math.PI * 20;
+  var pill = document.getElementById('restPill'), panel = document.getElementById('restPanel');
+  var tArc = document.getElementById('tArc'), tTime = document.getElementById('tTime'), tLabel = document.getElementById('tLabel');
+  var tToggle = document.getElementById('tToggle');
+  var PAUSE = '<svg viewBox="0 0 24 24"><rect x="6.5" y="5" width="4" height="14" rx="1.2"/><rect x="13.5" y="5" width="4" height="14" rx="1.2"/></svg>';
+  var PLAY = '<svg viewBox="0 0 24 24"><path d="M8 5.2v13.6a1 1 0 0 0 1.5.86l11-6.8a1 1 0 0 0 0-1.72l-11-6.8A1 1 0 0 0 8 5.2z"/></svg>';
+  var remaining = TOTAL, endAt = 0, tick = null, mode = 'idle'; // idle | running | paused | done
+  tArc.setAttribute('stroke-dasharray', T_C);
+
+  function fmt(s) { return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+  function paintTimer() {
+    var secs = Math.ceil(remaining);
+    tArc.style.strokeDashoffset = T_C * (1 - Math.max(remaining, 0) / TOTAL);
+    panel.classList.toggle('urgent', secs <= 10);
+    tTime.textContent = mode === 'done' ? 'Go' : fmt(secs);
+    tLabel.textContent = mode === 'done' ? 'Rest over' : mode === 'paused' ? 'Paused' : 'Rest · ' + fmt(TOTAL);
+    tToggle.innerHTML = mode === 'running' ? PAUSE : PLAY;
+    tToggle.setAttribute('aria-label', mode === 'running' ? 'Pause' : mode === 'done' ? 'Start again' : 'Resume');
+  }
+  function stopTick() { if (tick) { clearInterval(tick); tick = null; } }
+  function run() {
+    mode = 'running'; endAt = Date.now() + remaining * 1000; stopTick();
+    tick = setInterval(function () {
+      remaining = (endAt - Date.now()) / 1000;
+      if (remaining <= 0) {
+        remaining = 0; mode = 'done'; stopTick();
+        if (navigator.vibrate) { try { navigator.vibrate([200, 100, 200]); } catch (e) {} }
+      }
+      paintTimer();
+    }, 200);
+    paintTimer();
+  }
+  function restart() { remaining = TOTAL; run(); }
+
+  function startRest(secs) { TOTAL = secs; pill.hidden = true; panel.hidden = false; restart(); }
+  pill.addEventListener('click', function () { startRest(60); });
+  document.getElementById('tRestart').addEventListener('click', restart);
+  tToggle.addEventListener('click', function () {
+    if (mode === 'running') { remaining = Math.max((endAt - Date.now()) / 1000, 0); mode = 'paused'; stopTick(); paintTimer(); }
+    else if (mode === 'done') restart();
+    else run();
+  });
+  document.getElementById('tClose').addEventListener('click', function () {
+    stopTick(); mode = 'idle'; remaining = TOTAL; paintTimer(); panel.hidden = true; pill.hidden = false;
+  });
+
+  show(current);
+})();
 </script>
 </body>
 </html>
